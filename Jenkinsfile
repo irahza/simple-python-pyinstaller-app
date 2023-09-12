@@ -9,4 +9,12 @@ node {
             sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
         }
     }
+    stage('Manual Approval') {
+        input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan eksekusi pipeline ke tahap Deploy atau Klik "Abort" untuk menghentikan eksekusi pipeline)' 
+    }
+    stage('Deploy') {
+        docker.image('cdrx/pyinstaller-linux:python2').inside('-p 3000:3000') {
+            sh 'pyinstaller --onefile sources/add2vals.py'
+            sh 'sleep 1m'
+    }
 }
